@@ -1,0 +1,10 @@
+<div class="chart-container">
+  <h2 class="chart-title">⚡ Total Power Output — Last 24 Hours</h2>
+  
+  <div *ngIf="loading" class="skeleton"></div>
+  
+  <!-- ✅ fixed height wrapper -->
+  <div style="height: 300px;" *ngIf="!loading">
+    <canvas #chartCanvas></canvas>
+  </div>
+</div>

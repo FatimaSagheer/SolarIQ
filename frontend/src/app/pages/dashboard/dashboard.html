@@ -1,0 +1,58 @@
+
+<!-- Loading skeleton -->
+<div *ngIf="loading" class="dashboard">
+  <div class="skeleton-card"></div>
+  <div class="skeleton-card"></div>
+  <div class="skeleton-card"></div>
+  <div class="skeleton-card"></div>
+</div>
+
+<!-- Error state -->
+<div *ngIf="error" class="error-banner">
+  ⚠️ {{ error }}
+</div>
+
+<!-- Dashboard -->
+<div *ngIf="!loading && !error" class="dashboard">
+  
+  <h1 class="title">☀️ SolarIQ Dashboard</h1>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    
+    <div class="kpi-card total">
+      <div class="kpi-icon">🏭</div>
+      <div class="kpi-value">{{ summary.total }}</div>
+      <div class="kpi-label">Total Systems</div>
+    </div>
+
+    <div class="kpi-card active">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-value">{{ summary.active }}</div>
+      <div class="kpi-label">Active</div>
+    </div>
+
+    <div class="kpi-card fault">
+      <div class="kpi-icon">⚠️</div>
+      <div class="kpi-value">{{ summary.fault }}</div>
+      <div class="kpi-label">Faults</div>
+    </div>
+
+    <div class="kpi-card offline">
+      <div class="kpi-icon">📴</div>
+      <div class="kpi-value">{{ summary.offline }}</div>
+      <div class="kpi-label">Offline</div>
+    </div>
+
+    <div class="kpi-card power">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-value">{{ summary.totalPower }} kW</div>
+      <div class="kpi-label">Total Power Output</div>
+    </div>
+
+  </div>
+  <!-- Power Chart -->
+<app-power-chart></app-power-chart>
+<!-- Fault List -->
+<app-fault-list></app-fault-list>
+</div>
