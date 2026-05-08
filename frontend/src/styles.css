@@ -1,3 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0f1117;
+}
+
+/* Fix Leaflet broken by Tailwind reset */
+.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+.leaflet-pane,
+.leaflet-map-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-marker-pane,
+.leaflet-popup-pane {
+  position: absolute !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  position: absolute !important;
+  z-index: 1000 !important;
+}
+
+.leaflet-tile {
+  filter: brightness(0.9) !important;
+}
+
+.leaflet-tile-container {
+  opacity: 1 !important;
+}

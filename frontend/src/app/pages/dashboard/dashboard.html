@@ -1,4 +1,3 @@
-
 <!-- Loading skeleton -->
 <div *ngIf="loading" class="dashboard">
   <div class="skeleton-card"></div>
@@ -14,45 +13,53 @@
 
 <!-- Dashboard -->
 <div *ngIf="!loading && !error" class="dashboard">
-  
-  <h1 class="title">☀️ SolarIQ Dashboard</h1>
+
+  <div class="header">
+    <h1 class="title">☀️ SolarIQ Dashboard</h1>
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      LIVE · Updated {{ lastUpdated | date:'HH:mm:ss' }}
+    </div>
+  </div>
+
+  <!-- New fault toast alert -->
+  <div *ngIf="newFaultAlert" class="toast-alert">
+    {{ newFaultAlert }}
+  </div>
 
   <!-- KPI Cards -->
   <div class="kpi-grid">
-    
     <div class="kpi-card total">
       <div class="kpi-icon">🏭</div>
       <div class="kpi-value">{{ summary.total }}</div>
       <div class="kpi-label">Total Systems</div>
     </div>
-
     <div class="kpi-card active">
       <div class="kpi-icon">✅</div>
       <div class="kpi-value">{{ summary.active }}</div>
       <div class="kpi-label">Active</div>
     </div>
-
     <div class="kpi-card fault">
       <div class="kpi-icon">⚠️</div>
       <div class="kpi-value">{{ summary.fault }}</div>
       <div class="kpi-label">Faults</div>
     </div>
-
     <div class="kpi-card offline">
       <div class="kpi-icon">📴</div>
       <div class="kpi-value">{{ summary.offline }}</div>
       <div class="kpi-label">Offline</div>
     </div>
-
     <div class="kpi-card power">
       <div class="kpi-icon">⚡</div>
       <div class="kpi-value">{{ summary.totalPower }} kW</div>
       <div class="kpi-label">Total Power Output</div>
     </div>
-
   </div>
-  <!-- Power Chart -->
-<app-power-chart></app-power-chart>
-<!-- Fault List -->
-<app-fault-list></app-fault-list>
+
+  <div style="display:flex; flex-direction:row; gap:2rem">
+    <div style="width:50%"><app-power-chart></app-power-chart></div>
+    <div style="width:50%"><app-systems-map></app-systems-map></div>
+  </div>
+
+  <app-fault-list></app-fault-list>
 </div>

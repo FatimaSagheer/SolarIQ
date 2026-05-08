@@ -1,0 +1,15 @@
+<div class="map-container">
+  <h2 class="map-title">🗺️ Pakistan Solar Systems Map</h2>
+
+  <div class="legend">
+    <span class="dot active"></span> Active
+    <span class="dot fault"></span> Fault
+    <span class="dot offline"></span> Offline
+  </div>
+
+  <!-- skeleton overlays map while loading -->
+  <div class="skeleton" [style.display]="loading ? 'block' : 'none'"></div>
+
+  <!-- map always in DOM -->
+  <div id="pakistan-map"></div>
+</div>

@@ -1,0 +1,54 @@
+.map-container {
+  background: #1e2130;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.map-title {
+  color: #ffffff;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  color: #aaa;
+  font-size: 13px;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.dot.active  { background: #1D9E75; }
+.dot.fault   { background: #E24B4A; }
+.dot.offline { background: #EF9F27; }
+
+/* ✅ fixed height — Leaflet MUST have fixed height, not min-height */
+#pakistan-map {
+  height: 270px !important;
+  width: 100% !important;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.skeleton {
+  height: 450px;
+  background: linear-gradient(90deg, #1e2130 25%, #2a2f45 50%, #1e2130 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { SolarService } from '../../services/solar.services';
 import { PowerChartComponent } from './components/power-chart/power-chart';
 import { FaultListComponent } from './components/fault-list/fault-list';
+import { SystemsMapComponent } from './components/systems-map/systems-map';
+
+import { SocketService } from '../../services/socket';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule,PowerChartComponent,FaultListComponent],
+  imports: [CommonModule,PowerChartComponent,FaultListComponent,SystemsMapComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
@@ -23,28 +27,64 @@ export class DashboardComponent implements OnInit {
 
   loading = true;
   error = '';
+  
+  lastUpdated = new Date();
+  newFaultAlert = '';
+   private subs: Subscription[] = [];
 
   constructor(
     private solarService: SolarService,
-    private cdr: ChangeDetectorRef  // ← add this
+    private cdr: ChangeDetectorRef ,
+    private socketService: SocketService,
   ) {}
 
   ngOnInit() {
     this.loadSummary();
   }
 
-  loadSummary() {
+ loadSummary() {
     this.solarService.getSummary().subscribe({
-      next: (data: { total: number; active: number; fault: number; offline: number; totalPower: number; }) => {
+      next: (data) => {
         this.summary = data;
         this.loading = false;
-        this.cdr.detectChanges(); // ← force Angular to update UI
+        this.cdr.detectChanges();
       },
-      error: (err: any) => {
+      error: (err) => {
         this.error = 'Failed to load data';
         this.loading = false;
-        this.cdr.detectChanges(); // ← force Angular to update UI
+        this.cdr.detectChanges();
       }
     });
+  }
+
+  listenToSocket() {
+    // Listen for stats updates
+    const statsSub = this.socketService.onStatsUpdate().subscribe(data => {
+      this.summary = data;
+      this.lastUpdated = new Date();
+      this.cdr.detectChanges();
+      console.log('📊 Stats updated live:', data);
+    });
+
+    // Listen for new faults
+    const faultSub = this.socketService.onNewFault().subscribe(fault => {
+      this.newFaultAlert = `⚠️ New fault: ${fault.type} at ${fault.systemId?.name}`;
+      this.summary.fault += 1;
+      this.cdr.detectChanges();
+
+      // Clear alert after 5 seconds
+      setTimeout(() => {
+        this.newFaultAlert = '';
+        this.cdr.detectChanges();
+      }, 5000);
+    });
+
+    this.subs.push(statsSub, faultSub);
+  }
+
+  // Clean up subscriptions when component destroyed
+  ngOnDestroy() {
+    this.subs.forEach(s => s.unsubscribe());
+    this.socketService.disconnect();
   }
 }

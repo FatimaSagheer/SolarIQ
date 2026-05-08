@@ -1,11 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const http = require('http');           // ← add
+const { Server } = require('socket.io');
 const connectDB = require('./config/db');
+const { initSocket } = require('./socket/live');
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(cors({
   origin: function(origin, callback) {
@@ -33,7 +37,7 @@ app.use('/api/faults', require('./routes/faults'));
 // Start server AFTER DB connects
 const start = async () => {
   await connectDB();
-  app.listen(3000, () => {
+  server.listen(3000, () => {  // ← server.listen not app.listen
     console.log('Server running on port 3000');
   });
 };
