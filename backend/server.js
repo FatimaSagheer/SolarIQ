@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const http = require('http');           // ← add
+const http = require('http');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const { initSocket } = require('./socket/live');
@@ -10,6 +10,17 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
+// ✅ create io and attach to server
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
+
+// ✅ init socket live updates
+initSocket(io);
 
 app.use(cors({
   origin: function(origin, callback) {
@@ -29,15 +40,15 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from SolarIQ 🚀' });
 });
+app.use('/api/auth', require('./routes/auth'));
 
 app.use('/api/systems', require('./routes/systems'));
 app.use('/api/readings', require('./routes/readings'));
 app.use('/api/faults', require('./routes/faults'));
 
-// Start server AFTER DB connects
 const start = async () => {
   await connectDB();
-  server.listen(3000, () => {  // ← server.listen not app.listen
+  server.listen(3000, () => {
     console.log('Server running on port 3000');
   });
 };
