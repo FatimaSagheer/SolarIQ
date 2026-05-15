@@ -38,4 +38,18 @@ getAllReadings(): Observable<any> {
 resolveFault(faultId: string): Observable<any> {
   return this.http.patch(`${this.api}/api/faults/${faultId}/resolve`, {});
 }
+// Get single system by ID
+getSystem(id: string): Observable<any> {
+  return this.http.get(`${this.api}/api/systems/${id}`);
+}
+
+// Get readings for one system
+getSystemReadings(id: string): Observable<any> {
+  return this.http.get(`${this.api}/api/readings/${id}`);
+}
+
+// Get faults for one system
+getSystemFaults(id: string): Observable<any> {
+  return this.http.get(`${this.api}/api/faults/system/${id}`);
+}
 }

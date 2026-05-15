@@ -7,6 +7,8 @@ import { SystemsMapComponent } from './components/systems-map/systems-map';
 
 import { SocketService } from '../../services/socket';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,15 +33,18 @@ export class DashboardComponent implements OnInit {
   lastUpdated = new Date();
   newFaultAlert = '';
    private subs: Subscription[] = [];
-
+systems: any[] = [];
   constructor(
     private solarService: SolarService,
     private cdr: ChangeDetectorRef ,
     private socketService: SocketService,
+     private authService: AuthService, 
+      private router: Router,
   ) {}
 
   ngOnInit() {
     this.loadSummary();
+     this.loadSystems();
   }
 
  loadSummary() {
@@ -81,10 +86,24 @@ export class DashboardComponent implements OnInit {
 
     this.subs.push(statsSub, faultSub);
   }
+  loadSystems() {
+  this.solarService.getSystems().subscribe({
+    next: (data) => {
+      this.systems = data;
+      this.cdr.detectChanges();
+    }
+  });
+}
+navigateToSystem(id: string) {
+  this.router.navigate(['/systems', id]);
+}
 
   // Clean up subscriptions when component destroyed
   ngOnDestroy() {
     this.subs.forEach(s => s.unsubscribe());
     this.socketService.disconnect();
   }
+  logout() {
+  this.authService.logout();
+}
 }

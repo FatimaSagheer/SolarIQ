@@ -13,7 +13,8 @@ export class SocketService {
   constructor() {
     // Connect to backend
     this.socket = io(environment.apiUrl, {
-      transports: ['websocket', 'polling']
+       transports: ['polling'],  // ← polling only, no websocket
+  upgrade: false 
     });
 
     this.socket.on('connect', () => {

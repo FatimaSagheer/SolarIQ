@@ -14,6 +14,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET faults for specific system
+router.get('/system/:systemId', async (req, res) => {
+  try {
+    const faults = await Fault.find({ 
+      systemId: req.params.systemId,
+      resolved: false 
+    }).sort({ detectedAt: -1 });
+    res.json(faults);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PATCH resolve a fault
 router.patch('/:id/resolve', async (req, res) => {
   try {

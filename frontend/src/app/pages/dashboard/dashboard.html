@@ -20,6 +20,7 @@
       <span class="live-dot"></span>
       LIVE · Updated {{ lastUpdated | date:'HH:mm:ss' }}
     </div>
+    <button class="logout-btn" (click)="logout()">Logout</button>
   </div>
 
   <!-- New fault toast alert -->
@@ -62,4 +63,24 @@
   </div>
 
   <app-fault-list></app-fault-list>
+  <!-- Systems List -->
+<div class="systems-section">
+  <h2 class="section-title">🏭 All Systems</h2>
+  <div class="systems-grid">
+    <div *ngFor="let system of systems" 
+         class="system-card"
+         (click)="navigateToSystem(system._id)">
+      <div class="system-status-dot" 
+           [style.background]="system.status === 'active' ? '#1D9E75' : 
+                               system.status === 'fault' ? '#E24B4A' : '#EF9F27'">
+      </div>
+      <div class="system-info">
+        <div class="system-name">{{ system.name }}</div>
+        <div class="system-city">📍 {{ system.city }}</div>
+        <div class="system-capacity">⚡ {{ system.capacity }} kW</div>
+      </div>
+      <div class="system-arrow">→</div>
+    </div>
+  </div>
+</div>
 </div>

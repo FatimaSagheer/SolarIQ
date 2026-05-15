@@ -1,0 +1,117 @@
+<div class="detail-page">
+
+  <!-- Header -->
+  <div class="detail-header">
+    <button class="back-btn" (click)="goBack()">← Back</button>
+    <div *ngIf="system">
+      <h1 class="system-name">{{ system.name }}</h1>
+      <span class="status-badge" [style.background]="getStatusColor(system.status) + '22'"
+            [style.color]="getStatusColor(system.status)">
+        {{ system.status | uppercase }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+  </div>
+
+  <div *ngIf="!loading">
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon">⚡</div>
+        <div class="kpi-value">{{ latestReading?.powerOutput || 0 }} kW</div>
+        <div class="kpi-label">Current Output</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-value">{{ latestReading?.efficiency || 0 }}%</div>
+        <div class="kpi-label">Efficiency</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🌡️</div>
+        <div class="kpi-value">{{ latestReading?.temperature || 0 }}°C</div>
+        <div class="kpi-label">Temperature</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🔋</div>
+        <div class="kpi-value">{{ latestReading?.voltage || 0 }} V</div>
+        <div class="kpi-label">Voltage</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">⚡</div>
+        <div class="kpi-value">{{ latestReading?.current || 0 }} A</div>
+        <div class="kpi-label">Current (A)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">☀️</div>
+        <div class="kpi-value">{{ latestReading?.irradiance || 0 }} W/m²</div>
+        <div class="kpi-label">Irradiance</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-container">
+      <h2 class="section-title">📈 Power Output — Last 24 Hours</h2>
+      <div style="height:280px;">
+        <canvas #readingsChart></canvas>
+      </div>
+    </div>
+
+    <!-- System Info + Faults -->
+    <div class="bottom-grid">
+
+      <!-- System Info -->
+      <div class="info-card" *ngIf="system">
+        <h2 class="section-title">ℹ️ System Info</h2>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-label">Capacity</span>
+            <span class="info-value">{{ system.capacity }} kW</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Panels</span>
+            <span class="info-value">{{ system.panelCount }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Inverter</span>
+            <span class="info-value">{{ system.inverterModel }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Performance Ratio</span>
+            <span class="info-value">{{ system.performanceRatio * 100 }}%</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">City</span>
+            <span class="info-value">{{ system.city }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Installed</span>
+            <span class="info-value">{{ system.installDate | date:'mediumDate' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Faults -->
+      <div class="info-card">
+        <h2 class="section-title">⚠️ Active Faults</h2>
+        <div *ngIf="faults.length === 0" class="no-faults">
+          ✅ No active faults
+        </div>
+        <div *ngFor="let fault of faults" class="fault-item">
+          <div class="fault-type">{{ fault.type }}</div>
+          <div class="fault-msg">{{ fault.message }}</div>
+          <div class="fault-severity severity-{{fault.severity}}">
+            {{ fault.severity | uppercase }}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

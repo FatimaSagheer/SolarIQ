@@ -113,3 +113,64 @@
   from { transform: translateY(-20px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
+.logout-btn {
+  background: transparent;
+  border: 1px solid #E24B4A;
+  color: #E24B4A;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #E24B4A;
+  color: #ffffff;
+}
+
+.systems-section {
+  margin-top: 24px;
+}
+
+.section-title {
+  color: #ffffff;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.system-card {
+  background: #1e2130;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.system-card:hover {
+  border-color: #1D9E75;
+  transform: translateY(-2px);
+}
+
+.system-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.system-info { flex: 1; }
+.system-name { color: #ffffff; font-size: 14px; font-weight: 500; }
+.system-city { color: #888; font-size: 12px; margin-top: 2px; }
+.system-capacity { color: #1D9E75; font-size: 12px; margin-top: 2px; }
+.system-arrow { color: #444; font-size: 18px; }
