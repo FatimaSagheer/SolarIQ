@@ -1,6 +1,7 @@
 const System = require('../models/System');
 const Reading = require('../models/Reading');
 const Fault = require('../models/Fault');
+const { sendCriticalFaultEmail, sendSystemOfflineEmail } = require('../services/email');
 
 // Realistic power simulation based on time of day
 function simulatePower(capacity, hour) {
@@ -35,8 +36,13 @@ async function maybeGenerateFault(systems) {
     detectedAt: new Date()
   });
 
-  // Populate system info for frontend
   await fault.populate('systemId', 'name city');
+
+  // ✅ Send email for critical faults only
+  if (randomFault.severity === 'critical') {
+    await sendCriticalFaultEmail(fault, randomSystem);
+  }
+
   return fault;
 }
 
