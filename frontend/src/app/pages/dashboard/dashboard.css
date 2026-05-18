@@ -174,3 +174,18 @@
 .system-city { color: #888; font-size: 12px; margin-top: 2px; }
 .system-capacity { color: #1D9E75; font-size: 12px; margin-top: 2px; }
 .system-arrow { color: #444; font-size: 18px; }
+.activity-btn {
+  background: transparent;
+  border: 1px solid #7F77DD;
+  color: #7F77DD;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.activity-btn:hover {
+  background: #7F77DD;
+  color: #ffffff;
+}

@@ -53,19 +53,33 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello from SolarIQ 🚀' });
 });
 app.use('/api/auth', require('./routes/auth'));
-
+app.use('/api/activity', require('./routes/activity'));
 app.use('/api/systems', require('./routes/systems'));
 app.use('/api/readings', require('./routes/readings'));
 app.use('/api/faults', require('./routes/faults'));
 
 // Test email route — remove in production
-app.get('/test-email', async (req, res) => {
-  const { sendWeeklyReportEmail } = require('./services/email');
-  await sendWeeklyReportEmail({
-    total: 50, active: 39, fault: 9, offline: 2, totalPower: 253.33
-  });
-  res.json({ message: 'Test email sent! Check your inbox' });
-});
+// app.get('/test-email', async (req, res) => {
+//   const { sendWeeklyReportEmail } = require('./services/email');
+//   await sendWeeklyReportEmail({
+//     total: 50, active: 39, fault: 9, offline: 2, totalPower: 253.33
+//   });
+//   res.json({ message: 'Test email sent! Check your inbox' });
+// });
+
+// ⚠️ TEMPORARY — delete after use!
+// app.get('/reset-db', async (req, res) => {
+//   try {
+//     await sequelize.query('DROP TABLE IF EXISTS "activity_logs" CASCADE');
+//     await sequelize.query('DROP TABLE IF EXISTS "user_sessions" CASCADE');
+//     await sequelize.query('DROP TYPE IF EXISTS "enum_activity_logs_action" CASCADE');
+//     await sequelize.query('DROP TYPE IF EXISTS "enum_activity_logs_status" CASCADE');
+//     await sequelize.sync({ force: true });
+//     res.json({ message: '✅ Tables recreated!' });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 // Every Monday at 9am
 cron.schedule('0 9 * * 1', async () => {

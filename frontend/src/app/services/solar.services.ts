@@ -52,4 +52,13 @@ getSystemReadings(id: string): Observable<any> {
 getSystemFaults(id: string): Observable<any> {
   return this.http.get(`${this.api}/api/faults/system/${id}`);
 }
+
+getActivityLogs(): Observable<any> {
+  return this.http.get(`${this.api}/api/activity`);
+}
+
+getActivityStats(): Observable<any> {
+  return this.http.get(`${this.api}/api/activity/stats`);
+}
+
 }

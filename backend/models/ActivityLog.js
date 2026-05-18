@@ -12,6 +12,10 @@ const ActivityLog = sequelize.define('ActivityLog', {
     type: DataTypes.STRING,
     allowNull: false
   },
+    userName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   action: {
     type: DataTypes.ENUM(
       'login',
@@ -27,6 +31,10 @@ const ActivityLog = sequelize.define('ActivityLog', {
   },
   userAgent: {
     type: DataTypes.STRING
+  },
+  status: {
+    type: DataTypes.ENUM('success', 'failed'),
+    defaultValue: 'success'
   },
   timestamp: {
     type: DataTypes.DATE,

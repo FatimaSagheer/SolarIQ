@@ -3,8 +3,8 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
-const ActivityLog = require('../models/ActivityLog');
-const UserSession = require('../models/userSession')
+const ActivityLog = require('../models/ActivityLog');  // ✅ correct path
+const UserSession = require('../models/userSession');  // ✅ correct path
 
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -17,6 +17,17 @@ router.post('/register', async (req, res) => {
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ error: 'Email already registered' });
     const user = await User.create({ name, email, password, role });
+
+    // ✅ Log register activity
+    await ActivityLog.create({
+      userId: user._id.toString(),
+      userName: user.name,
+      action: 'register',
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
+
     res.status(201).json({
       token: generateToken(user._id),
       user: { id: user._id, name: user.name, email: user.email, role: user.role }
@@ -32,8 +43,10 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
+    // ✅ user// ✅ Add debug log
+console.log('User name:', user.name);
+console.log('User id:', user._id);
     if (!user) {
-      // ✅ Log failed login attempt
       await ActivityLog.create({
         userId: 'unknown',
         userName: 'unknown',
@@ -46,8 +59,9 @@ router.post('/login', async (req, res) => {
     }
 
     const isMatch = await user.comparePassword(password);
+
+    // ✅ wrong password — user exists so use user._id
     if (!isMatch) {
-      // ✅ Log failed login
       await ActivityLog.create({
         userId: user._id.toString(),
         userName: user.name,
@@ -61,7 +75,7 @@ router.post('/login', async (req, res) => {
 
     const token = generateToken(user._id);
 
-    // ✅ Log successful login
+    // ✅ successful login
     await ActivityLog.create({
       userId: user._id.toString(),
       userName: user.name,
@@ -71,13 +85,13 @@ router.post('/login', async (req, res) => {
       status: 'success'
     });
 
-    // ✅ Create session record
+    // ✅ create session
     await UserSession.create({
       userId: user._id.toString(),
       userName: user.name,
       tokenPreview: token.substring(0, 20),
       ipAddress: req.ip,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
     res.json({
@@ -89,6 +103,7 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 // Get current user
 router.get('/me', protect, async (req, res) => {
   res.json(req.user);

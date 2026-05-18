@@ -1,0 +1,93 @@
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">← Back</button>
+    <h1 class="title">📋 Activity Log</h1>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">🔐</div>
+      <div class="stat-value">{{ stats.totalLogins || 0 }}</div>
+      <div class="stat-label">Total Logins</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-value">{{ stats.recentLogins || 0 }}</div>
+      <div class="stat-label">Last 7 Days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-value">{{ stats.totalFaultsResolved || 0 }}</div>
+      <div class="stat-label">Faults Resolved</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-value">{{ stats.failedLogins || 0 }}</div>
+      <div class="stat-label">Failed Logins</div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-bar">
+    <span class="filter-label">Filter by action:</span>
+    <select [(ngModel)]="filterAction" (change)="filterLogs()" class="filter-select">
+      <option value="all">All Actions</option>
+      <option value="login">Login</option>
+      <option value="logout">Logout</option>
+      <option value="resolve_fault">Resolve Fault</option>
+      <option value="view_system">View System</option>
+      <option value="register">Register</option>
+    </select>
+    <span class="filter-count">{{ filteredLogs.length }} records</span>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="skeleton"></div>
+
+  <!-- Logs Table -->
+  <div *ngIf="!loading" class="table-container">
+    <table class="log-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Action</th>
+          <th>Status</th>
+          <th>IP Address</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of filteredLogs" class="log-row">
+          <td class="user-cell">
+            <div class="user-avatar">{{ log.userName?.charAt(0) || '?' }}</div>
+            <span>{{ log.userName || 'Unknown' }}</span>
+          </td>
+          <td>
+            <span class="action-badge"
+                  [style.background]="getActionColor(log.action) + '22'"
+                  [style.color]="getActionColor(log.action)">
+              {{ log.action | titlecase }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge"
+                  [style.background]="getStatusColor(log.status) + '22'"
+                  [style.color]="getStatusColor(log.status)">
+              {{ log.status | uppercase }}
+            </span>
+          </td>
+          <td class="ip-cell">{{ log.ipAddress || 'N/A' }}</td>
+          <td class="time-cell">{{ log.createdAt | date:'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="filteredLogs.length === 0" class="empty">
+      No activity logs found
+    </div>
+  </div>
+
+</div>

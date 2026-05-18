@@ -106,4 +106,7 @@ navigateToSystem(id: string) {
   logout() {
   this.authService.logout();
 }
+goToActivity() {
+  this.router.navigate(['/activity']);
+}
 }
