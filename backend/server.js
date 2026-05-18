@@ -1,14 +1,24 @@
+
 const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config();
+// I fixed the issue by ensuring environment variables were loaded before 
+// Sequelize initialization. Since Sequelize was being executed during 
+// module import, dotenv needed to be configured at the entry point before 
+// any database config file is imported.
+const { sequelize } = require('./config/postgres');
+require('./models/ActivityLog');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
+const { connectPostgres } = require('./config/postgres');
 const { initSocket } = require('./socket/live');
 const cron = require('node-cron');
 const { sendWeeklyReportEmail } = require('./services/email');
 
-dotenv.config();
+
+
 
 const app = express();
 const server = http.createServer(app);
@@ -83,6 +93,20 @@ cron.schedule('0 9 * * 1', async () => {
 
 const start = async () => {
   await connectDB();
+
+  // PostgreSQL connect (authenticate only)
+  await connectPostgres();
+
+  // ✅ CREATE TABLES IF NOT EXIST (Sequelize magic)
+// What sync() does?
+// sequelize.sync()	      creates missing tables
+// sync({ force: true })	deletes + recreates tables ❌ dangerous
+// sync({ alter: true })	updates schema safely
+
+  await sequelize.sync();
+
+  console.log('✅ All PostgreSQL tables synced');
+
   server.listen(3000, () => {
     console.log('Server running on port 3000');
   });

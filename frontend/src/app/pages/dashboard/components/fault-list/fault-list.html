@@ -1,35 +1,49 @@
-<div class="fault-container">
-  <h2 class="fault-title">⚠️ Active Fault Alerts</h2>
+<h2 class="fault-section-title">⚠️ Active Fault Alerts</h2>
 
-  <div *ngIf="loading" class="skeleton"></div>
+<div *ngIf="!loading && faults.length > 0" class="fault-list">
 
-  <div *ngIf="!loading && faults.length === 0" class="no-faults">
-    ✅ No active faults — all systems running normally
-  </div>
+  <div
+    *ngFor="let fault of faults"
+    class="fault-card"
+    [ngClass]="getSeverityClass(fault.severity)"
+  >
 
-  <div *ngIf="!loading && faults.length > 0" class="fault-list">
-    <div *ngFor="let fault of faults" class="fault-card" [ngClass]="getSeverityClass(fault.severity)">
-      
-      <div class="fault-header">
-        <span class="fault-type">{{ fault.type | titlecase }}</span>
-        <span class="fault-severity" [ngClass]="getSeverityClass(fault.severity)">
+    <!-- LEFT STRIP -->
+    <div class="severity-bar"></div>
+
+    <!-- CONTENT -->
+    <div class="fault-content">
+
+      <div class="fault-top">
+        <div>
+          <h3 class="fault-type">{{ fault.type | titlecase }}</h3>
+          <p class="fault-system">
+            🏭 {{ fault.systemId?.name || 'Unknown System' }}
+          </p>
+        </div>
+
+        <span class="badge" [ngClass]="getSeverityClass(fault.severity)">
           {{ fault.severity | uppercase }}
         </span>
       </div>
 
-      <div class="fault-body">
-        <div class="fault-info">
-          <span>🏭 {{ fault.systemId?.name || 'Unknown System' }}</span>
-          <span>📍 {{ fault.systemId?.city || 'Unknown City' }}</span>
-          <span>💬 {{ fault.message }}</span>
-          <span>🕒 {{ fault.detectedAt | date:'short' }}</span>
-        </div>
+      <div class="fault-grid">
+        <div class="grid-item">📍 {{ fault.systemId?.city || 'Unknown City' }}</div>
+        <div class="grid-item">🕒 {{ fault.detectedAt | date:'short' }}</div>
+      </div>
 
-        <button class="resolve-btn" (click)="resolveFault(fault._id)">
+      <div class="fault-message">
+        💬 {{ fault.message }}
+      </div>
+
+      <div class="fault-actions">
+        <button (click)="resolveFault(fault._id)">
           ✅ Resolve
         </button>
       </div>
 
     </div>
+
   </div>
+
 </div>
